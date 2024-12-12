@@ -1,0 +1,82 @@
+from flask import Flask, render_template, request
+
+app = Flask(__name__)
+
+# Пример данных о книгах
+books = [
+    {"title": "1984", "author": "George Orwell", "genre": "Dystopian", "pages": 328},
+    {"title": "To Kill a Mockingbird", "author": "Harper Lee", "genre": "Fiction", "pages": 281},
+    {"title": "The Great Gatsby", "author": "F. Scott Fitzgerald", "genre": "Fiction", "pages": 180},
+    {"title": "Moby Dick", "author": "Herman Melville", "genre": "Adventure", "pages": 585},
+    {"title": "War and Peace", "author": "Leo Tolstoy", "genre": "Historical", "pages": 1225},
+    # Добавьте больше книг по мере необходимости
+]
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/recommend', methods=['POST'])
+def recommend():
+    genre = request.form.get('genre')
+    min_pages = int(request.form.get('min_pages', 0))
+    max_pages = int(request.form.get('max_pages', float('inf')))
+    author = request.form.get('author')
+
+    filtered_books = [
+        book for book in books
+        if (genre == '' or book['genre'].lower() == genre.lower()) and
+           (min_pages <= book['pages'] <= max_pages) and
+           (author == '' or book['author'].lower() == author.lower())
+    ]
+
+    return render_template('result.html', books=filtered_books)
+
+if __name__ == '__main__':
+    app.run(debug=True)      
+Flask==2.0.1
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Recommender</title>
+</head>
+<body>
+    <h1>Find Your Next Book</h1>
+    <form action="/recommend" method="post">
+        <label for="genre">Genre:</label>
+        <input type="text" id="genre" name="genre"><br>
+
+        <label for="min_pages">Min Pages:</label>
+        <input type="number" id="min_pages" name="min_pages"><br>
+
+        <label for="max_pages">Max Pages:</label>
+        <input type="number" id="max_pages" name="max_pages"><br>
+
+        <label for="author">Author:</label>
+        <input type="text" id="author" name="author"><br>
+
+        <input type="submit" value="Recommend">
+    </form>
+</body>
+</html>
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recommendations</title>
+</head>
+<body>
+    <h1>Recommended Books</h1>
+    <ul>
+        {% for book in books %}
+            <li>{{ book.title }} by {{ book.author }} ({{ book.pages }} pages, Genre: {{ book.genre }})</li>
+        {% else %}
+            <li>No books found matching your criteria.</li>
+        {% endfor %}
+    </ul>
+    <a href="/">Back</a>
+</body>
+</html>
