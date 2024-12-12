@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Recommender</title>
+</head>
+<body>
+    <h1>Find Your Next Book</h1>
+    <form action="/recommend" method="post">
+        <label for="genre">Genre:</label>
+        <input type="text" id="genre" name="genre"><br>
+
+        <label for="min_pages">Min Pages:</label>
+        <input type="number" id="min_pages" name="min_pages"><br>
+
+        <label for="max_pages">Max Pages:</label>
+        <input type="number" id="max_pages" name="max_pages"><br>
+
+        <label for="author">Author:</label>
+        <input type="text" id="author" name="author"><br>
+
+        <input type="submit" value="Recommend">
+    </form>
+</body>
+</html>
